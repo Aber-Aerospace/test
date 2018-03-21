@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+'''A python program to record data from a rocket launch.'''
+
 import time
 from multiprocessing import Pool as pool
 from multiprocessing import queues
