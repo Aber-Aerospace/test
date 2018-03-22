@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 '''A python program to record data from a rocket launch.'''
 
+import os
 import time
 from multiprocessing import Pool as pool
 from multiprocessing import queues
@@ -54,13 +55,15 @@ def dataToFile(data):
     pass
 
 def main():
+
+    path = "/home/pi/data/".format(uuid.uuid4())
+
+    os.mkdir(path, 0755)
+
     p = pool(20)
     q = queue()
     p.apply_async(readGPS, q)
     p.apply_async(readI2c, q)
-
-
-    units = {0: 'x', 1: 'y', 2: 'z'}
     f = open('OutputFile', 'w')
 
     while true:
@@ -69,7 +72,7 @@ def main():
             currData = makeCurrData()
             data.append(currData)
 
-        p.apply_async(dataToFile, data)
+        p.apply_async(dataToFile, p=path, d=data)
 
 
 if __name__ is "__main__":
