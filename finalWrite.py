@@ -44,7 +44,7 @@ def readI2c(queue):
     s185 = BMP085.BMP085()
     s6050 = mpu6050(0x68)
     while True:
-        data = new []
+        data = list()
         data.append(time.time())
         data.append(s6050.get_all_data())
         data.append(s185.read_temperature())
