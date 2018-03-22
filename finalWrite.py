@@ -58,7 +58,7 @@ def main():
 
     path = "/home/pi/data/{}".format(uuid.uuid4())
 
-    os.mkdir(path, 0755)
+    os.mkdir(path, exist_ok=True)
 
     p = pool(20)
     q = queue()
