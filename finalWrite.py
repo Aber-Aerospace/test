@@ -3,12 +3,12 @@
 
 import os
 import time
+import pickle
 from multiprocessing import Pool as pool
 from multiprocessing import queues
 import uuid
 import Adafruit_BMP.BMP085 as BMP085
 from mpu6050 import mpu6050
-import pickle
 
 
 
@@ -45,7 +45,7 @@ def readI2c(queue):
     s185 = BMP085.BMP085()
     s6050 = mpu6050(0x68)
     while True:
-        data = list()
+        data = []
         data.append(time.time())
         data.append(s6050.get_all_data())
         data.append(s185.read_temperature())
@@ -55,7 +55,7 @@ def readI2c(queue):
 
 def makeCurrData(i2cq, gpsq):
     '''emptys the sensor queues into a dict.'''
-    pass
+    return "temp\n"
 
 def dataToFile(p=path, d=data):
     '''exports a dataset as a pickle file with a uuid name.'''
@@ -69,18 +69,19 @@ def main():
     os.mkdir(path, exist_ok=True)
 
     p = pool(20)
-    q = queue()
-    p.apply_async(readGPS, q)
-    p.apply_async(readI2c, q)
-    f = open('OutputFile', 'w')
+    i2cq = queue()
+    gpsq = queue()
+    p.apply_async(readGPS, gpsq)
+    p.apply_async(readI2c, i2cq)
 
-    while true:
+    while True:
         data = list()
         for i in range(0, 500):
-            currData = makeCurrData()
+            currData = makeCurrData(i2cq, gpsq)
             data.append(currData)
 
-        p.apply_async(dataToFile, p=path, d=data)
+        print(currData)
+        #p.apply_async(dataToFile, [p=path, d=data])
 
 
 if __name__ is "__main__":
