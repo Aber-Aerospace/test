@@ -44,13 +44,14 @@ def readI2c(queue):
     '''constantly looping watcher to pull data out of the i2c sensors'''
     s185 = BMP085.BMP085()
     s6050 = mpu6050(0x68)
+    print("Starting watch loop")
     while True:
         data = []
-        data.append(time.time())
-        data.append(s6050.get_all_data())
-        data.append(s185.read_temperature())
-        data.append(s185.read_pressure())
-        data.append(s185.read_altitude())
+        #data.append(time.time())
+        #data.append(s6050.get_all_data())
+        #data.append(s185.read_temperature())
+        #data.append(s185.read_pressure())
+        #data.append(s185.read_altitude())
         data.append("test string")
         queue.put(data)
 
