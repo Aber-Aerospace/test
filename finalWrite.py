@@ -51,12 +51,13 @@ def readI2c(queue):
         data.append(s185.read_temperature())
         data.append(s185.read_pressure())
         data.append(s185.read_altitude())
+        data.append("test string")
         queue.put(data)
 
 def makeCurrData(i2cq, gpsq):
     '''emptys the sensor queues into a dict.'''
-    meh = i2cq.get()
-    gps = gpsq.get()
+    meh = i2cq.get_nowait()
+    gps = gpsq.get_nowait()
 
     return [meh, gps]
 
