@@ -5,7 +5,7 @@ import os
 import time
 import pickle
 from multiprocessing import Pool as pool
-from multiprocessing import queues
+from multiprocessing import Queue
 import uuid
 import Adafruit_BMP.BMP085 as BMP085
 from mpu6050 import mpu6050
@@ -57,7 +57,7 @@ def makeCurrData(i2cq, gpsq):
     '''emptys the sensor queues into a dict.'''
     return "temp\n"
 
-def dataToFile(p=path, d=data):
+def dataToFile(p=None, d=None):
     '''exports a dataset as a pickle file with a uuid name.'''
     pickle.dump(d, open(p, 'wb'))
 
@@ -66,11 +66,11 @@ def main():
 
     path = "/home/pi/data/{}".format(uuid.uuid4())
 
-    os.mkdir(path, exist_ok=True)
+    os.mkdir(path)
 
     p = pool(20)
-    i2cq = queue()
-    gpsq = queue()
+    i2cq = Queue()
+    gpsq = Queue()
     p.apply_async(readGPS, gpsq)
     p.apply_async(readI2c, i2cq)
 
@@ -84,5 +84,5 @@ def main():
         #p.apply_async(dataToFile, [p=path, d=data])
 
 
-if __name__ is "__main__":
+if __name__ == "__main__":
     main()
