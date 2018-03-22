@@ -3,12 +3,12 @@
 
 import os
 import time
+import pickle
 from multiprocessing import Pool as pool
-from multiprocessing import queues
+from multiprocessing import Queue
 import uuid
 import Adafruit_BMP.BMP085 as BMP085
 from mpu6050 import mpu6050
-import pickle
 
 
 
@@ -38,26 +38,31 @@ while True:
 def readGPS(queue):
     '''Empty for now'''
     while True:
-        pass
+        queue.put("hello from the gps")
 
 def readI2c(queue):
     '''constantly looping watcher to pull data out of the i2c sensors'''
     s185 = BMP085.BMP085()
     s6050 = mpu6050(0x68)
+    print("Starting watch loop")
     while True:
-        data = list()
-        data.append(time.time())
-        data.append(s6050.get_all_data())
-        data.append(s185.read_temperature())
-        data.append(s185.read_pressure())
-        data.append(s185.read_altitude())
+        data = []
+        #data.append(time.time())
+        #data.append(s6050.get_all_data())
+        #data.append(s185.read_temperature())
+        #data.append(s185.read_pressure())
+        #data.append(s185.read_altitude())
+        data.append("test string")
         queue.put(data)
 
 def makeCurrData(i2cq, gpsq):
     '''emptys the sensor queues into a dict.'''
-    pass
+    meh = i2cq.get_nowait()
+    gps = gpsq.get_nowait()
 
-def dataToFile(p=path, d=data):
+    return [meh, gps]
+
+def dataToFile(p=None, d=None):
     '''exports a dataset as a pickle file with a uuid name.'''
     pickle.dump(d, open(p, 'wb'))
 
@@ -66,22 +71,25 @@ def main():
 
     path = "/home/pi/data/{}".format(uuid.uuid4())
 
-    os.mkdir(path, exist_ok=True)
+    os.mkdir(path)
 
     p = pool(20)
-    q = queue()
-    p.apply_async(readGPS, q)
-    p.apply_async(readI2c, q)
-    f = open('OutputFile', 'w')
+    i2cq = Queue(maxsize=200)
+    gpsq = Queue(maxsize = 4)
+    p.apply_async(readGPS, gpsq)
+    p.apply_async(readI2c, i2cq)
 
-    while true:
+    time.sleep(200)
+
+    while True:
         data = list()
         for i in range(0, 500):
-            currData = makeCurrData()
+            currData = makeCurrData(i2cq, gpsq)
             data.append(currData)
 
-        p.apply_async(dataToFile, p=path, d=data)
+        print(data)
+        #p.apply_async(dataToFile, [p=path, d=data])
 
 
-if __name__ is "__main__":
+if __name__ == "__main__":
     main()
