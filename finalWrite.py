@@ -50,13 +50,13 @@ def makeCurrData(i2cq, gpsq):
     '''emptys the sensor queues into a dict.'''
     pass
 
-def dataToFile(data):
+def dataToFile(p=path, d=data):
     '''exports a dataset as a pickel file with a uuid name.'''
-    pass
+
 
 def main():
 
-    path = "/home/pi/data/".format(uuid.uuid4())
+    path = "/home/pi/data/{}".format(uuid.uuid4())
 
     os.mkdir(path, 0755)
 
