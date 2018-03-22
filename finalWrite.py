@@ -55,7 +55,10 @@ def readI2c(queue):
 
 def makeCurrData(i2cq, gpsq):
     '''emptys the sensor queues into a dict.'''
-    return "temp\n"
+    meh = i2cq.get()
+    gps = gpsq.get()
+
+    return [meh, gps]
 
 def dataToFile(p=None, d=None):
     '''exports a dataset as a pickle file with a uuid name.'''
