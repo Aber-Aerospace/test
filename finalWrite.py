@@ -44,7 +44,13 @@ def readI2c(queue):
     s185 = BMP085.BMP085()
     s6050 = mpu6050(0x68)
     while True:
-        pass
+        data = new []
+        data.append(time.time())
+        data.append(s6050.get_all_data())
+        data.append(s185.read_temperature())
+        data.append(s185.read_pressure())
+        data.append(s185.read_altitude())
+        queue.put(data)
 
 def makeCurrData(i2cq, gpsq):
     '''emptys the sensor queues into a dict.'''
