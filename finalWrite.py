@@ -83,7 +83,7 @@ def main():
             currData = makeCurrData(i2cq, gpsq)
             data.append(currData)
 
-        print(currData)
+        print(data)
         #p.apply_async(dataToFile, [p=path, d=data])
 
 
