@@ -38,7 +38,7 @@ while True:
 def readGPS(queue):
     '''Empty for now'''
     while True:
-        pass
+        queue.put("hello from the gps")
 
 def readI2c(queue):
     '''constantly looping watcher to pull data out of the i2c sensors'''
