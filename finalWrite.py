@@ -8,6 +8,7 @@ from multiprocessing import queues
 import uuid
 import Adafruit_BMP.BMP085 as BMP085
 from mpu6050 import mpu6050
+import pickle
 
 
 
@@ -57,7 +58,8 @@ def makeCurrData(i2cq, gpsq):
     pass
 
 def dataToFile(p=path, d=data):
-    '''exports a dataset as a pickel file with a uuid name.'''
+    '''exports a dataset as a pickle file with a uuid name.'''
+    pickle.dump(d, open(p, 'wb'))
 
 
 def main():
