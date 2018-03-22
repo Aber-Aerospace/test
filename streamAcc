@@ -1,0 +1,6 @@
+from mpu6050 import mpu6050
+s6050 = mpu6050(0x68)
+def streamData(info):
+	print("x: {:.3f}, y: {:.3f}, z: {:.3f}".format(info['x'], info['y'], info['z']))
+while True:
+	streamData(s6050.get_accel_data())
