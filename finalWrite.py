@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 '''A python program to record data from a rocket launch.'''
 
-import os
 import time
 from multiprocessing import Pool as pool
 from multiprocessing import queues
@@ -44,26 +43,30 @@ def readI2c(queue):
     s185 = BMP085.BMP085()
     s6050 = mpu6050(0x68)
     while True:
-        pass
+        data = new []
+        data.append(time.time())
+        data.append(s6050.get_all_data())
+        data.append(s185.read_temperature())
+        data.append(s185.read_pressure())
+        data.append(s185.read_altitude())
+        q.
 
 def makeCurrData(i2cq, gpsq):
     '''emptys the sensor queues into a dict.'''
     pass
 
-def dataToFile(p=path, d=data):
+def dataToFile(data):
     '''exports a dataset as a pickel file with a uuid name.'''
-
+    pass
 
 def main():
-
-    path = "/home/pi/data/{}".format(uuid.uuid4())
-
-    os.mkdir(path, exist_ok=True)
-
     p = pool(20)
     q = queue()
     p.apply_async(readGPS, q)
     p.apply_async(readI2c, q)
+
+
+    units = {0: 'x', 1: 'y', 2: 'z'}
     f = open('OutputFile', 'w')
 
     while true:
@@ -72,7 +75,7 @@ def main():
             currData = makeCurrData()
             data.append(currData)
 
-        p.apply_async(dataToFile, p=path, d=data)
+        p.apply_async(dataToFile, data)
 
 
 if __name__ is "__main__":
