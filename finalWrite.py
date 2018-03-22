@@ -73,8 +73,8 @@ def main():
     os.mkdir(path)
 
     p = pool(20)
-    i2cq = Queue()
-    gpsq = Queue()
+    i2cq = Queue(maxsize=200)
+    gpsq = Queue(maxsize = 4)
     p.apply_async(readGPS, gpsq)
     p.apply_async(readI2c, i2cq)
 
