@@ -79,7 +79,7 @@ def main():
     p.apply_async(readGPS, gpsq)
     p.apply_async(readI2c, i2cq)
 
-    time.wait(200)
+    time.sleep(200)
 
     while True:
         data = list()
